@@ -1,0 +1,17 @@
+﻿marka;model;CPU producent;CPU ilość rdzeni;CPU maksymalne taktowanie zegara;szerokość;wysokość;SSD;RAM;Czas pracy na baterii ;Cena ;Gwarancja;GPU model;GPU ocena liczbowa;Rozmiar ekranu
+DELL;7400;Intel;4;3,9;1980;1080;256;16;13h;8299;36;zintegrowana;1;14
+MS;surface book 2;intel;4;4,2;3000;2000;256;8;17h;7399;12;GTX 1050;4;13
+Acer;swift 3;intel ;4;3,6;1920;1080;512;8;13h;3200;24;zintegrowana;1;14
+MSI;gl75;intel;6;4,5;1920;1080;256;8;4h;4549;24;gtx 1660Ti;6;17
+Lenovo;thinkpad t470;intel;2;3,1;1920;1080;256;16;17h;4049;36;zintegrowana;1;14
+MS;surface book 3;intel;4;3,7;3000;2000;256;8;12h;8199;12;zintegrowana;2;13
+Huawei ;matebook d14;amd;4;3,7;1920;1080;256;8;9.5h;2699;24;zintegrowana;2;14
+Macbook Air;2017;intel;4;3,5;2560;1600;256;8;11h;5399;12;zintegrowana;1;13
+Lenovo ;Legion Y740-15IRHg i7;intel;6;4,5;1920;1080;512;16;6h;7299;24;NVIDIA GeForce RTX 2070 Max-Q ;7;15,6
+Asus ;ZenBook ux333fn;intel;4;4,6;1920;1080;512;8;14h;5099;24;NVIDIA GeForce MX150;2;13,3
+HP ;EliteBook 840 G6;intel;4;4,6;1920;1080;960;32;10h;7699;36;zintegrowana;1;14
+MSI;Prestige 14;intel;6;4,7;1920;1080;512;16;10h;5099;24;NVIDIA GeForce MX330;2,5;14
+Lenovo;thinkpad l15;intel ;4;4,2;1920;1080;512;16;14h;5099;24;zintegrowana;2;15
+Lenovo;thinkpad t495;amd;4;3,7;1920;1080;256;8;15h;5699;36;AMD Radeon Vega 7;2;14
+DELL;precition 3551;intel ;6;5,1;1920;1080;512;16;20h;10499;36;NVIDIA Quadro P619;3;15
+DELL;vostro 5501;intel ;4;3,6;1920;1080;512;16;4h;4399;36;zintegrowana;1;15
