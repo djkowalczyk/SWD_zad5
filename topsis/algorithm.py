@@ -4,8 +4,7 @@ testy metody TOPSIS dla dwóch zestawów danych - smartfonów oraz laptopów."""
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import openpyxl
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Dict, Tuple, Union
 
 
 class Solution(NamedTuple):
@@ -29,6 +28,13 @@ class Solution(NamedTuple):
         df = pd.DataFrame(data)
 
         df.to_excel('ranking.xlsx')
+
+    def get_dict_ranking(self) -> Dict[Tuple[Union[int, float]], float]:
+        dict_ranking = {}
+        for i, score in enumerate(self.ranking):
+            features = tuple(self.alternatives[i, 2:])
+            dict_ranking[features] = score
+        return dict_ranking
 
 
 def display_solution(s: Solution, axis_labels: List[str], title: str, alternatives_names: List[str] = None) -> None:
@@ -209,6 +215,7 @@ def topsis(alternatives: np.ndarray, classes: np.ndarray, weights: np.ndarray, c
                 alt_points[i] = i + 1
             else:
                 alt_points[i] = 0
+                break
 
     n_alt_temp = 0
     for i in range(n_alt):
@@ -261,6 +268,7 @@ def topsis(alternatives: np.ndarray, classes: np.ndarray, weights: np.ndarray, c
         anti_ideal_vector,
         distances,
         ranking,
+
     )
 
 
