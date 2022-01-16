@@ -18,7 +18,7 @@ def prepare_dataset_for_topsis(filepath: str):
 
     alternatives = [[c[i] for c in categories] for i in range(len(data))]
 
-    criteria_types = ['min', 'min', 'min', 'min', 'min']
+    criteria_types = ['max', 'max', 'max', 'min', 'min']
 
     ideal_point = []
     anti_ideal_point = []
