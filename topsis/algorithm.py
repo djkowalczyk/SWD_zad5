@@ -219,14 +219,14 @@ def topsis(alternatives: np.ndarray, classes: np.ndarray, weights: np.ndarray, c
 
     n_alt_temp = 0
     for i in range(n_alt):
-        if abs(alt_points[i]) <= 10e-6:
+        if alt_points[i] != 0:
             n_alt_temp += 1
 
     # uzupełnienie macierzy decyzjnej
     id_ = 0
     decision_matrix = np.zeros((n_alt_temp, n_criteria))
     for i in range(n_alt):
-        if abs(alt_points[i]) <= 10e-6:
+        if alt_points[i] != 0:
             for j in range(2, n_criteria + 2):
                 decision_matrix[id_, j - 2] = alternatives[i, j]
         id_ += 1

@@ -1,5 +1,5 @@
 import numpy as np
-from topsis import topsis, manhattan_metric, Solution
+from topsis import topsis, manhattan_metric, Solution, display_solution
 
 
 def prepare_dataset_for_topsis(filepath: str):
@@ -10,15 +10,16 @@ def prepare_dataset_for_topsis(filepath: str):
     names = [row[1] for row in data]
     percents = [float(row[3]) for row in data]
     ibus = [float(row[3]) for row in data]
-    volumes = [int(row[4]) for row in data]
-    commonness = [float(row[5]) for row in data]
-    prices = [float(row[6]) for row in data]
+    volumes = [float(row[4]) for row in data]
+    #commonness = [float(row[5]) for row in data]
+    #prices = [float(row[6]) for row in data]
 
-    categories = [percents, ibus, volumes, commonness, prices]
-
+    #categories = [percents, ibus, volumes, commonness, prices]
+    categories = [percents, ibus, volumes]
     alternatives = [[c[i] for c in categories] for i in range(len(data))]
 
-    criteria_types = ['max', 'max', 'max', 'min', 'min']
+    #criteria_types = ['min', 'min', 'min', 'min', 'min']
+    criteria_types = ['min', 'min', 'min']
 
     ideal_point = []
     anti_ideal_point = []
@@ -33,11 +34,11 @@ def prepare_dataset_for_topsis(filepath: str):
     classes = [ideal_point,
                anti_ideal_point]
 
-    return names, category_names, alternatives, classes, criteria_types
+    return names, category_names[1:], alternatives, classes, criteria_types
 
 
 if __name__ == '__main__':
-    beer_data_path = 'datasets/piwa_kraftowe.csv'
+    beer_data_path = 'datasets/piwa_kraftowe_3_kolumn.csv'
 
     names, category_names, alternatives, classes, criteria_types = prepare_dataset_for_topsis(beer_data_path)
 
@@ -52,6 +53,7 @@ if __name__ == '__main__':
 
     s: Solution = topsis(alternatives=np.array(A), classes=np.array(K), weights=np.array(W),
                          criteria_types=criteria_types, metric=manhattan_metric)
+    display_solution(s, axis_labels=category_names, title="Położenie ocen rankingowych alternatyw", alternatives_names=names)
 
     # metoda elegancko zwraca słownik (współrzędne punktu) : wartość scoringowa
     for key, value in s.get_dict_ranking().items():
