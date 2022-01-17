@@ -211,7 +211,8 @@ def topsis(alternatives: np.ndarray, classes: np.ndarray, weights: np.ndarray, c
     alt_points = np.zeros(n_alt)
     for i in range(n_alt):
         for j in range(2, n_criteria + 2):
-            if classes[0, j - 1] <= alternatives[i, j] <= classes[1, j - 1]:
+            if (criteria_types[j - 2] == "max" and classes[0, j - 1] <= alternatives[i, j] <= classes[1, j - 1])\
+                    or (criteria_types[j - 2] == "min" and classes[0, j - 1] >= alternatives[i, j] >= classes[1, j - 1]):
                 alt_points[i] = i + 1
             else:
                 alt_points[i] = 0
@@ -219,14 +220,14 @@ def topsis(alternatives: np.ndarray, classes: np.ndarray, weights: np.ndarray, c
 
     n_alt_temp = 0
     for i in range(n_alt):
-        if alt_points[i] != 0:
+        if alt_points[i] == 0:
             n_alt_temp += 1
 
     # uzupełnienie macierzy decyzjnej
     id_ = 0
     decision_matrix = np.zeros((n_alt_temp, n_criteria))
     for i in range(n_alt):
-        if alt_points[i] != 0:
+        if alt_points[i] == 0:
             for j in range(2, n_criteria + 2):
                 decision_matrix[id_, j - 2] = alternatives[i, j]
         id_ += 1

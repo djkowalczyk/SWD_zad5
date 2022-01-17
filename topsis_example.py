@@ -1,11 +1,12 @@
 import numpy as np
-from topsis.topsis import topsis, manhattan_metric, Solution
+from topsis import topsis, manhattan_metric, Solution
 
 
 def prepare_dataset_for_topsis(filepath: str):
     with open(filepath, 'r') as file:
         category_names = file.readline()[1:].split(',')
         data = [line.split(",") for line in file.readlines()]
+
     if len(data[0]) == 7:
         names = [row[1] for row in data]
         percents = [float(row[3]) for row in data]
@@ -29,6 +30,7 @@ def prepare_dataset_for_topsis(filepath: str):
         categories = [percents, ibus]
         criteria_types = ['min', 'min']
     alternatives = [[c[i] for c in categories] for i in range(len(data))]
+
 
     ideal_point = []
     anti_ideal_point = []
@@ -65,3 +67,7 @@ def main(beer_data_path):
     # metoda elegancko zwraca słownik (współrzędne punktu) : wartość scoringowa
     print(s)
     return s
+
+
+if __name__ == '__main__':
+    main("datasets/piwa_kraftowe_5_kolumn.csv")
