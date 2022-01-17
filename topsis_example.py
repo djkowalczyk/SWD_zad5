@@ -1,25 +1,34 @@
 import numpy as np
-from topsis import topsis, manhattan_metric, Solution, display_solution
+from topsis.topsis import topsis, manhattan_metric, Solution
 
 
 def prepare_dataset_for_topsis(filepath: str):
     with open(filepath, 'r') as file:
         category_names = file.readline()[1:].split(',')
         data = [line.split(",") for line in file.readlines()]
-
-    names = [row[1] for row in data]
-    percents = [float(row[3]) for row in data]
-    ibus = [float(row[3]) for row in data]
-    volumes = [float(row[4]) for row in data]
-    #commonness = [float(row[5]) for row in data]
-    #prices = [float(row[6]) for row in data]
-
-    #categories = [percents, ibus, volumes, commonness, prices]
-    categories = [percents, ibus, volumes]
+    if len(data[0]) == 7:
+        names = [row[1] for row in data]
+        percents = [float(row[3]) for row in data]
+        ibus = [float(row[3]) for row in data]
+        volumes = [float(row[4]) for row in data]
+        commonness = [float(row[5]) for row in data]
+        prices = [float(row[6]) for row in data]
+        categories = [percents, ibus, volumes, commonness, prices]
+        criteria_types = ['min', 'min', 'min', 'min', 'min']
+    elif len(data[0]) == 5:
+        names = [row[1] for row in data]
+        percents = [float(row[3]) for row in data]
+        ibus = [float(row[3]) for row in data]
+        volumes = [float(row[4]) for row in data]
+        categories = [percents, ibus, volumes]
+        criteria_types = ['min', 'min', 'min']
+    elif len(data[0]) == 4:
+        names = [row[1] for row in data]
+        percents = [float(row[3]) for row in data]
+        ibus = [float(row[3]) for row in data]
+        categories = [percents, ibus]
+        criteria_types = ['min', 'min']
     alternatives = [[c[i] for c in categories] for i in range(len(data))]
-
-    #criteria_types = ['min', 'min', 'min', 'min', 'min']
-    criteria_types = ['min', 'min', 'min']
 
     ideal_point = []
     anti_ideal_point = []
@@ -37,11 +46,10 @@ def prepare_dataset_for_topsis(filepath: str):
     return names, category_names[1:], alternatives, classes, criteria_types
 
 
-if __name__ == '__main__':
-    beer_data_path = 'datasets/piwa_kraftowe_3_kolumn.csv'
+def main(beer_data_path):
 
     names, category_names, alternatives, classes, criteria_types = prepare_dataset_for_topsis(beer_data_path)
-
+    print(names, category_names, alternatives, classes, criteria_types)
     # poprawka na offsety
     A = [[1, 1] + row for row in alternatives]
 
@@ -53,8 +61,7 @@ if __name__ == '__main__':
 
     s: Solution = topsis(alternatives=np.array(A), classes=np.array(K), weights=np.array(W),
                          criteria_types=criteria_types, metric=manhattan_metric)
-    display_solution(s, axis_labels=category_names, title="Położenie ocen rankingowych alternatyw", alternatives_names=names)
 
     # metoda elegancko zwraca słownik (współrzędne punktu) : wartość scoringowa
-    for key, value in s.get_dict_ranking().items():
-        print(key, value)
+    print(s)
+    return s

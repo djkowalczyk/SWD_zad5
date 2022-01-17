@@ -151,13 +151,12 @@ def calc_score_function(weights: Dict[object, List[object]], distance_coefs: Dic
         d = np.array(distance_coefs[u])
         ranking[u] = w@d.T
 
-    ranking = {u: value for u, value in sorted(ranking.items(), key=lambda item: item[1])}
+    ranking = {u: value for u, value in sorted(ranking.items(), key=lambda item: item[1],reverse=True)}
 
     return ranking
 
 
-def main():
-    points = [(0, 2), (1, 2), (1, 5), (2, 3), (2, 9), (3, 1), (3, 6), (3, 8), (4, 3), (4, 5), (4, 9), (5, 7), (6, 9), (6, 10), (7, 3), (7, 5), (7, 10), (8, 8), (9, 2), (9, 5), (9, 7), (9, 9), (10, 4), (10, 8), (10, 9), (11, 6), (11, 10), (12, 1), (12, 4), (12, 7)]
+def main(points):
     limit = (len(points)//4) + 1
     points = transfer(points)
     sorting_points(points)
@@ -168,7 +167,7 @@ def main():
     distance_coefs = calc_distance_coefficients(areas)
     ranking = calc_score_function(weights, distance_coefs)
 
-    print(ranking)
+    return ranking,A1,A2
 
 if __name__ == "__main__":
     main()

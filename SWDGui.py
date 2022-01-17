@@ -9,10 +9,28 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtWidgets import QApplication, QMainWindow,QWidget, QVBoxLayout,QLabel, QFileDialog,QMessageBox
+import sys
+import os
+import pandas as pd
+import RSM
+import SP
+import topsis_example
+import utastar
+import matplotlib.pyplot as plt
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.lista_dan = []
+        self.path = ""
+
+        self.punkty = QtGui.QStandardItemModel()
+        self.klasy = QtGui.QStandardItemModel()
+        self.klasy.setHorizontalHeaderLabels(["punkt", "klasa"])
+        self.rank = QtGui.QStandardItemModel()
+        self.rank.setHorizontalHeaderLabels(["punkt", "score"])
+
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(939, 721)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -20,30 +38,50 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(80, 30, 141, 41))
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.openFile)
+
+
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(630, 30, 141, 41))
         self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_2.clicked.connect(self.compute)
+
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(360, 40, 131, 21))
         self.comboBox.setObjectName("comboBox")
-        self.listWidget = QtWidgets.QListWidget(self.centralwidget)
-        self.listWidget.setGeometry(QtCore.QRect(70, 150, 256, 192))
-        self.listWidget.setObjectName("listWidget")
-        self.listWidget_2 = QtWidgets.QListWidget(self.centralwidget)
-        self.listWidget_2.setGeometry(QtCore.QRect(600, 150, 256, 192))
-        self.listWidget_2.setObjectName("listWidget_2")
-        self.listWidget_3 = QtWidgets.QListWidget(self.centralwidget)
-        self.listWidget_3.setGeometry(QtCore.QRect(330, 420, 256, 192))
-        self.listWidget_3.setObjectName("listWidget_3")
+        self.comboBox.addItems(["RSM","Topsis","SPCS","STAR"])
+
+        self.punktyView = QtWidgets.QTableView(self.centralwidget)
+        self.punktyView.setGeometry(QtCore.QRect(70, 150, 256, 192))
+        self.punktyView.setObjectName("punktyView")
+        self.punktyView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.punktyView.setModel(self.punkty)
+
+        self.klasyView = QtWidgets.QTableView(self.centralwidget)
+        self.klasyView.setGeometry(QtCore.QRect(600, 150, 256, 192))
+        self.klasyView.setObjectName("klasyView")
+        self.klasyView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.klasyView.setModel(self.klasy)
+
+        self.rankView = QtWidgets.QTableView(self.centralwidget)
+        self.rankView.setGeometry(QtCore.QRect(330, 420, 256, 192))
+        self.rankView.setObjectName("rankView")
+        self.rankView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.rankView.setModel(self.rank)
+
+
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(110, 120, 161, 21))
         self.label.setObjectName("label")
+
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(700, 130, 55, 16))
         self.label_2.setObjectName("label_2")
+
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(430, 400, 55, 16))
         self.label_3.setObjectName("label_3")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -52,6 +90,196 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def compute(self):
+        if self.rank.rowCount() != 0:
+            self.klasy = QtGui.QStandardItemModel()
+            self.klasy.setHorizontalHeaderLabels(["punkt", "klasa"])
+            self.rank = QtGui.QStandardItemModel()
+            self.rank.setHorizontalHeaderLabels(["punkt", "score"])
+        used = self.comboBox.currentText()
+        if used == "RSM":
+            ranking,A1,A2 = RSM.main(self.lista_dan)
+            for i in range(len(ranking)):
+                newItem = QtGui.QStandardItem(str(list(ranking)[i]))
+                self.rank.appendRow(newItem)
+                row_id = self.rank.rowCount() - 1
+                self.rank.setData(self.rank.index(row_id,1),str(ranking[list(ranking)[i]]))
+            for i in A1:
+                newItem = QtGui.QStandardItem(str(i))
+                self.klasy.appendRow(newItem)
+                row_id = self.klasy.rowCount() - 1
+                self.klasy.setData(self.klasy.index(row_id,1),"A1")
+            for i in A2:
+                newItem = QtGui.QStandardItem(str(i))
+                self.klasy.appendRow(newItem)
+                row_id = self.klasy.rowCount() - 1
+                self.klasy.setData(self.klasy.index(row_id,1),"A2")
+            self.rankView.resizeColumnsToContents()
+            self.klasyView.resizeColumnsToContents()
+            self.do_figure_RSM(ranking)
+        elif used == "SPCS":
+            if len(self.lista_dan[0]) == 2:
+                ranking,A1,A2 = SP.main(self.lista_dan)
+                for i in range(len(ranking)):
+                    newItem = QtGui.QStandardItem(str(list(ranking)[i]))
+                    self.rank.appendRow(newItem)
+                    row_id = self.rank.rowCount() - 1
+                    self.rank.setData(self.rank.index(row_id,1),str(ranking[list(ranking)[i]]))
+
+                for i in A1:
+                    newItem = QtGui.QStandardItem(str(i))
+                    self.klasy.appendRow(newItem)
+                    row_id = self.klasy.rowCount() - 1
+                    self.klasy.setData(self.klasy.index(row_id,1),"A1")
+
+                for i in A2:
+                    newItem = QtGui.QStandardItem(str(i))
+                    self.klasy.appendRow(newItem)
+                    row_id = self.klasy.rowCount() - 1
+                    self.klasy.setData(self.klasy.index(row_id,1),"A2")
+                self.rankView.resizeColumnsToContents()
+                self.klasyView.resizeColumnsToContents()
+                self.do_figure_SP(ranking)
+            elif len(self.lista_dan[0]) == 3:
+                pass
+            # TODO funckaj spcs dla 3 zmeinnych do organizacji.
+        elif used == "Topsis":
+            s = topsis_example.main(self.path)
+            for key, value in s.get_dict_ranking().items(): # ranking do posortowania
+                newItem = QtGui.QStandardItem(str(key))
+                self.rank.appendRow(newItem)
+                row_id = self.rank.rowCount() - 1
+                self.rank.setData(self.rank.index(row_id,1),str(value))
+        elif used == "STAR":
+            s = utastar.main(self.path)
+            print(s)
+            for key,value in s.items():
+                newItem = QtGui.QStandardItem(str(key))
+                self.rank.appendRow(newItem)
+                row_id = self.rank.rowCount() - 1
+                self.rank.setData(self.rank.index(row_id,1),str(value))
+
+
+
+            # TODO funkcja topsis na podstawie tego co jest na gicie
+
+    def do_figure_RSM(self,data):
+        fig = plt.figure(figsize=(12,12))
+        if len(self.lista_dan[0]) == 2:
+            x = []
+            y = []
+            for tup in self.lista_dan:
+                x.append(tup[0])
+                y.append(tup[1])
+
+            plt.scatter(x,y)
+            x2 = []
+            y2 = []
+            new_data = list(data)
+            i = 0
+            for cos in new_data:
+                if i > 5:
+                    break
+                x2.append(cos.a)
+                y2.append(cos.b)
+                i += 1
+            plt.scatter(x2,y2,c="red")
+            plt.show()
+        elif len(self.lista_dan[0]) == 3:
+            ax = fig.add_subplot(projection='3d')
+            x = []
+            y = []
+            z = []
+            for tup in self.lista_dan:
+                x.append(tup[0])
+                y.append(tup[1])
+                z.append(tup[2])
+            ax.scatter(x,y,z)
+            x2 = []
+            y2 = []
+            z2 = []
+            i = 0
+            for key in data.keys():
+                if i > 5:
+                    break
+                x2.append(key.a)
+                y2.append(key.b)
+                z2.append(key.c)
+                i += 1
+                print(i)
+            print(len(x2))
+            ax.scatter(x2,y2,z2,c='red')
+            plt.show()
+
+    def do_figure_SP(self,data):
+        fig = plt.figure(figsize=(12,12))
+        if len(self.lista_dan[0]) == 2:
+            x = []
+            y = []
+            for tup in self.lista_dan:
+                x.append(tup[0])
+                y.append(tup[1])
+
+            plt.scatter(x,y)
+            x2 = []
+            y2 = []
+            new_data = list(data)
+            i = 0
+            for cos in new_data:
+                if i > 5:
+                    break
+                x2.append(cos[0])
+                y2.append(cos[1])
+                i += 1
+            plt.scatter(x2,y2,c="red")
+            plt.show()
+        elif len(self.lista_dan[0]) == 3:
+            ax = fig.add_subplot(projection='3d')
+            x = []
+            y = []
+            z = []
+            for tup in self.lista_dan:
+                x.append(tup[0])
+                y.append(tup[1])
+                z.append(tup[2])
+            ax.scatter(x,y,z)
+            x2 = []
+            y2 = []
+            z2 = []
+            i = 0
+            for key,value in data.items():
+                if i > 5:
+                    break
+                x2.append(key[0])
+                y2.append(key[1])
+                z2.append(key[2])
+                i += 1
+            ax.scatter(x2,y2,z2,c='red')
+            plt.show()
+
+    def openFile(self):
+        file_filter = "Data File (*.csv)"
+        response = QFileDialog.getOpenFileName(
+            parent = None,
+            caption = "Select a data file",
+            directory = os.getcwd(),
+            filter = file_filter,
+            initialFilter = file_filter
+        )
+        if response[0] != "":
+            self.path = response[0]
+            data = pd.read_csv(response[0])
+            self.punkty.setHorizontalHeaderLabels(list(data.columns)[1:])
+            for index,row in data.iterrows():
+                newItem = QtGui.QStandardItem(row[1])
+                self.punkty.appendRow(newItem)
+                row_id = self.punkty.rowCount() - 1
+                helper = []
+                for i in range(1,len(data.columns)-1):
+                    self.punkty.setData(self.punkty.index(row_id,i),float(row[i+1]))
+                    helper.append(float(row[i+1]))
+                self.lista_dan.append(tuple(helper))
+        self.punktyView.resizeColumnsToContents()
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
