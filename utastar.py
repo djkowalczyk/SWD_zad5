@@ -94,7 +94,8 @@ class Utastar:
 
     def divide_into_parts(self, num_of_parts: list = None):
         if num_of_parts is None:
-            num_of_parts = [8, 6, 3, 7, 4]
+            # num_of_parts = [8, 6, 3, 7, 4]
+            num_of_parts = [8, 8, 8, 8, 8]
             num_of_parts = num_of_parts[:self.size]
         if len(num_of_parts) != self.size:
             raise Exception("Podano nieprawidłową liczbę współczynników!")
@@ -115,12 +116,15 @@ class Utastar:
         for i in range(self.size):
             print("{}: ".format(self.labels[i + 2]), self.parts[i])
 
-
     def create_usability_function_values(self, weights: list = None):
         if self.function_values is None:
             if weights is None:
-                weights = [[0.2, 0.18, 0.15, 0.12, 0.09, 0.06, 0.03, 0], [0.15, 0.13, 0.1, 0.06, 0.03, 0],
-                           [0.25, 0.15, 0], [0.1, 0.09, 0.075, 0.045, 0.03, 0.01, 0], [0.3, 0.22, 0.1, 0]]
+                # weights = [[0.2, 0.18, 0.15, 0.12, 0.09, 0.06, 0.03, 0], [0.15, 0.13, 0.1, 0.06, 0.03, 0],
+                #            [0.25, 0.15, 0], [0.1, 0.09, 0.075, 0.045, 0.03, 0.01, 0], [0.3, 0.22, 0.1, 0]]
+                weights = [[0.2, 0.18, 0.14, 0.11, 0.09, 0.05, 0.03, 0], [0.2, 0.18, 0.14, 0.11, 0.09, 0.05, 0.03, 0],
+                           [0.2, 0.18, 0.14, 0.11, 0.09, 0.05, 0.03, 0], [0.2, 0.18, 0.14, 0.11, 0.09, 0.05, 0.03, 0],
+                           [0.2, 0.18, 0.14, 0.11, 0.09, 0.05, 0.03, 0]]
+                weights = [[i * 5/self.size for i in elem] for elem in weights]
                 weights = weights[:self.size]
             sum = 0
             for i in range(self.size):
@@ -192,7 +196,6 @@ class Utastar:
             solution[key] = value
         a = 1
         return solution
-
 
 
 def main(path):
