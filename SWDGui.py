@@ -144,15 +144,16 @@ class Ui_MainWindow(object):
                 pass
             # TODO funckaj spcs dla 3 zmeinnych do organizacji.
         elif used == "Topsis":
-            s = topsis_example.main(self.path)
-            for key, value in s.get_dict_ranking().items(): # ranking do posortowania
+            ranking = topsis_example.main(self.path)
+            s = {u: value for u, value in sorted(ranking.get_dict_ranking().items(), key=lambda item: item[1],reverse=True)}
+            for key, value in s.items(): # ranking do posortowania
                 newItem = QtGui.QStandardItem(str(key))
                 self.rank.appendRow(newItem)
                 row_id = self.rank.rowCount() - 1
                 self.rank.setData(self.rank.index(row_id,1),str(value))
+            self.do_figure_SP(s)
         elif used == "STAR":
             s = utastar.main(self.path)
-            print(s)
             for key,value in s.items():
                 newItem = QtGui.QStandardItem(str(key))
                 self.rank.appendRow(newItem)
