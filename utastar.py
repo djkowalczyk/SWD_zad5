@@ -190,12 +190,13 @@ class Utastar:
     def return_solution(self):
         solution = {}
         for craft_beer in self.data_base:
-            key = [craft_beer.name] + craft_beer.points
+            key = craft_beer.points
             key = tuple(key)
-            value = craft_beer.utastar_value
+            value = (craft_beer.utastar_value - 1) * -1
             solution[key] = value
         a = 1
-        return solution
+        sol = dict(sorted(solution.items(), key=lambda item: item[1], reverse=True))
+        return sol
 
 
 def main(path):
