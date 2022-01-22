@@ -190,7 +190,7 @@ class Utastar:
     def return_solution(self):
         solution = {}
         for craft_beer in self.data_base:
-            key = [craft_beer.name] + craft_beer.points
+            key = craft_beer.points
             key = tuple(key)
             value = craft_beer.utastar_value
             solution[key] = value
