@@ -159,7 +159,7 @@ class Ui_MainWindow(object):
                 self.rank.appendRow(newItem)
                 row_id = self.rank.rowCount() - 1
                 self.rank.setData(self.rank.index(row_id,1),str(value))
-
+            self.do_figure_SP(s)
 
 
             # TODO funkcja topsis na podstawie tego co jest na gicie

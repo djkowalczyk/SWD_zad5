@@ -54,6 +54,7 @@ class Utastar:
     def find_min(self):
         if self.data_base is None:
             raise Exception("Baza danych nie istnieje!")
+
         else:
             minimum = []
             for i in range(self.size):
@@ -105,8 +106,8 @@ class Utastar:
                 sum_components = [(maximum[i] - minimum[i]) / (num_of_parts[i] - 1) for i in range(self.size)]
                 self.parts = []
                 for i in range(self.size):
-                    self.parts.append([minimum[i] + j * sum_components[i] for j in range(num_of_parts[i] - 1)] +
-                                      [maximum[i]])
+                    self.parts.append([maximum[i] - j * sum_components[i] for j in range(num_of_parts[i] - 1)] +
+                                      [minimum[i]])
             else:
                 raise Exception("Podział na części został już wykonany!")
 
@@ -156,11 +157,11 @@ class Utastar:
                         value_list.append(value)
                     values_for_interval = {}
                     counter = 1
-                    for j in range(len(self.function_values[i]) - 1):
-                        a = (value_list[j] - value_list[j + 1]) / (key_list[j] - key_list[j + 1])
+                    for j in range(len(self.function_values[i]) - 1, 0, -1):
+                        a = (value_list[j] - value_list[j - 1])/(key_list[j] - key_list[j - 1])
                         b = value_list[j] - a * key_list[j]
                         print("W przedziale {}:  a = {}, b = {}".format(counter, a, b))
-                        values_for_interval[(key_list[j], key_list[j + 1])] = (a, b)
+                        values_for_interval[(key_list[j], key_list[j - 1])] = (a, b)
                         counter += 1
                     self.function_values_in_intervals.append(values_for_interval)
             else:
@@ -179,6 +180,7 @@ class Utastar:
                             if key[0] <= craft_beer.points[i] <= key[1]:
                                 craft_beer.u_values.append(value[0] * craft_beer.points[i] + value[1])
                                 break
+
                     for u in craft_beer.u_values:
                         craft_beer.utastar_value += u
                 else:
@@ -192,6 +194,7 @@ class Utastar:
             key = tuple(key)
             value = craft_beer.utastar_value
             solution[key] = value
+        a = 1
         return solution
 
 
