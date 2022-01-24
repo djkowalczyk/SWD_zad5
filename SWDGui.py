@@ -120,6 +120,7 @@ class Ui_MainWindow(object):
         elif used == "SPCS":
             if len(self.lista_dan[0]) == 2:
                 ranking,A1,A2 = SP.main(self.lista_dan)
+                print(SP.change(ranking,'C:/Users/admin/PycharmProjects/SWD_zad5/datasets/piwa_kraftowe_2_kolumn.csv'))
                 for i in range(len(ranking)):
                     newItem = QtGui.QStandardItem(str(list(ranking)[i]))
                     self.rank.appendRow(newItem)

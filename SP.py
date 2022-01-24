@@ -1,4 +1,7 @@
 import numpy as np
+import pandas as pd
+
+
 class PointData:
     def __init__(self,dist=None,points=[],normalized_dist=None):
         self.dist = dist
@@ -84,6 +87,14 @@ def check_if_points_independant(points):
             elif i[0] >= j[0] and i[1] >= j[1] and i not in index and i != j:
                 index.append(i)
     return index
+def change(ranking,url):
+    data = pd.read_csv(url)
+    new_di = {}
+    for key,value in ranking.items():
+        for index,row in data.iterrows():
+            if row[2] == key[0] and row[3] == key[1]:
+                new_di[row[1]] = value
+    return new_di
 
 def main(points):
     limit = (len(points)//4) + 1
