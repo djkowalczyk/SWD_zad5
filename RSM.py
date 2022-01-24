@@ -1,6 +1,6 @@
 from typing import List, Tuple, Set, Dict
 import numpy as np
-
+import csv
 
 class Points:
     def __init__(self, a=0, b=0, c=0, d=0, e=0) -> None:
@@ -155,6 +155,27 @@ def calc_score_function(weights: Dict[object, List[object]], distance_coefs: Dic
 
     return ranking
 
+def import_csv_file(path):
+    hash = {}
+    with open(path, newline='') as file:
+        reader = list(csv.reader(file))
+        for row in reader[1:]:
+            name, points = row[1], [float(elem) for elem in row[2:]]
+            points = Points(*points)
+            hash[points] = name
+    return hash
+
+def comparison(ranking, hash):
+    named_ranking = {}
+    for pos in ranking.keys():
+        named_ranking[hash[pos]] = pos
+    return named_ranking
+
+def show_names(path, ranking):
+    hash = import_csv_file(path)
+    named = comparison(ranking, hash)
+    return named
+
 
 def main(points):
     limit = (len(points)//4) + 1
@@ -166,6 +187,9 @@ def main(points):
     weights = calc_weights(areas)
     distance_coefs = calc_distance_coefficients(areas)
     ranking = calc_score_function(weights, distance_coefs)
+
+    
+    show_names(path)
 
     return ranking,A1,A2
 
