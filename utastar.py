@@ -191,7 +191,7 @@ class Utastar:
         solution = {}
         counter = 1
         for craft_beer in self.data_base:
-            key = craft_beer.name, [craft_beer.points]
+            key = [craft_beer.name] + craft_beer.points
             value = craft_beer.utastar_value, counter
             solution[key] = value
             counter += 1
