@@ -71,9 +71,9 @@ def drawDistances(rank: np.ndarray, type: int, methods: list):
     graph(matrix=D, methods=methods)
 
 
-def main(rankings, methods):
+def main(rankings, type, methods):
     rank = np.array(rankings)
-    drawDistances(rank, 3, methods)
+    drawDistances(rank, type, methods)
 
 
 if __name__ == '__main__':

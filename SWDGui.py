@@ -52,7 +52,7 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(360, 40, 131, 21))
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItems(["RSM","Topsis","SPCS","STAR", "Porównanie"])
+        self.comboBox.addItems(["RSM","Topsis","SPCS","STAR", "Porównanie 1", "Porównanie 2", "Porównanie 3", "Porównanie 4"])
 
         self.punktyView = QtWidgets.QTableView(self.centralwidget)
         self.punktyView.setGeometry(QtCore.QRect(70, 150, 256, 192))
@@ -165,7 +165,7 @@ class Ui_MainWindow(object):
                 self.rank.setData(self.rank.index(row_id,1),str(value))
             self.do_figure_SP(s)
 
-        elif used == "Porównanie":
+        elif "Porównanie" in used:
             if self.n_criteria == 0:
                 return
 
@@ -192,7 +192,8 @@ class Ui_MainWindow(object):
                     methods_ranks[i].append(r[beer])
             considered_method_names = ["RSM", "SPCS", "TOPSIS", "UTA"]
             method_names = [name for r, name in zip(considered_ranks, considered_method_names) if r is not None]
-            compare_rankings.main(rankings=methods_ranks, methods=method_names)
+            comparison_type = int(used[-1])
+            compare_rankings.main(rankings=methods_ranks, type=comparison_type, methods=method_names)
 
     def do_figure_RSM(self,data):
         fig = plt.figure(figsize=(12,12))
