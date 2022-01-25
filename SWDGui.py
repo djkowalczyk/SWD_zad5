@@ -98,7 +98,7 @@ class Ui_MainWindow(object):
             self.rank.setHorizontalHeaderLabels(["punkt", "score"])
         used = self.comboBox.currentText()
         if used == "RSM":
-            ranking,A1,A2 = RSM.main(self.lista_dan)
+            ranking,A1,A2,w = RSM.main(self.lista_dan,self.path)
             for i in range(len(ranking)):
                 newItem = QtGui.QStandardItem(str(list(ranking)[i]))
                 self.rank.appendRow(newItem)
@@ -120,7 +120,7 @@ class Ui_MainWindow(object):
         elif used == "SPCS":
             if len(self.lista_dan[0]) == 2:
                 ranking,A1,A2 = SP.main(self.lista_dan)
-                print(SP.change(ranking,'C:/Users/admin/PycharmProjects/SWD_zad5/datasets/piwa_kraftowe_2_kolumn.csv'))
+                print(SP.change(ranking,self.path))
                 for i in range(len(ranking)):
                     newItem = QtGui.QStandardItem(str(list(ranking)[i]))
                     self.rank.appendRow(newItem)

@@ -168,6 +168,8 @@ def import_csv_file(path):
 def comparison(ranking, hash):
     named_ranking = {}
     for pos in ranking.keys():
+        print(pos)
+        print(hash[pos])
         named_ranking[hash[pos]] = pos
     return named_ranking
 
@@ -177,7 +179,7 @@ def show_names(path, ranking):
     return named
 
 
-def main(points):
+def main(points, path):
     limit = (len(points)//4) + 1
     points = transfer(points)
     sorting_points(points)
@@ -188,10 +190,9 @@ def main(points):
     distance_coefs = calc_distance_coefficients(areas)
     ranking = calc_score_function(weights, distance_coefs)
 
-    
-    show_names(path)
+    w = show_names(path, ranking)
 
-    return ranking,A1,A2
+    return ranking,A1,A2,w
 
 if __name__ == "__main__":
     main()
