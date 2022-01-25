@@ -18,11 +18,14 @@ import SP
 import topsis_example
 import utastar
 import matplotlib.pyplot as plt
+import compare_rankings
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.lista_dan = []
         self.path = ""
+
+        self.n_criteria = 0
 
         self.punkty = QtGui.QStandardItemModel()
         self.klasy = QtGui.QStandardItemModel()
@@ -49,7 +52,7 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(360, 40, 131, 21))
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItems(["RSM","Topsis","SPCS","STAR"])
+        self.comboBox.addItems(["RSM","Topsis","SPCS","STAR", "Porównanie"])
 
         self.punktyView = QtWidgets.QTableView(self.centralwidget)
         self.punktyView.setGeometry(QtCore.QRect(70, 150, 256, 192))
@@ -145,14 +148,14 @@ class Ui_MainWindow(object):
                 pass
             # TODO funckaj spcs dla 3 zmeinnych do organizacji.
         elif used == "Topsis":
-            ranking = topsis_example.main(self.path)
-            s = {u: value for u, value in sorted(ranking.get_dict_ranking().items(), key=lambda item: item[1],reverse=True)}
+            solution, named_ranking = topsis_example.main(self.path)
+            s = {u: value for u, value in sorted(named_ranking.items(), key=lambda item: item[1],reverse=True)}
             for key, value in s.items(): # ranking do posortowania
                 newItem = QtGui.QStandardItem(str(key))
                 self.rank.appendRow(newItem)
                 row_id = self.rank.rowCount() - 1
                 self.rank.setData(self.rank.index(row_id,1),str(value))
-            self.do_figure_SP(s)
+            self.do_figure_SP(solution.get_dict_ranking())
         elif used == "STAR":
             s = utastar.main(self.path)
             for key,value in s.items():
@@ -162,8 +165,34 @@ class Ui_MainWindow(object):
                 self.rank.setData(self.rank.index(row_id,1),str(value))
             self.do_figure_SP(s)
 
+        elif used == "Porównanie":
+            if self.n_criteria == 0:
+                return
 
-            # TODO funkcja topsis na podstawie tego co jest na gicie
+            ranking,A1,A2, r1 = RSM.main(self.lista_dan,self.path)
+            r1 = {name: i+1 for i, name in enumerate(r1.keys())}
+            if self.n_criteria <= 2:
+                r2, A1, A2 = SP.main(self.lista_dan)
+                r2 = dict(sorted(SP.change(r2, self.path).items(), key=lambda x: x[1]))
+                r2 = {name: i+1 for i, name in enumerate(r2.keys())}
+            else:
+                r2 = None
+            solution, r3 = topsis_example.main(self.path)
+            r3 = {u: value for u, value in sorted(r3.items(), key=lambda item: item[1], reverse=True)}
+            r3 = {name: i+1 for i, name in enumerate(r3.keys())}
+            r4 = utastar.main(self.path)
+            r4 = {name: score[1] for name, score in r4.items()}
+
+            considered_ranks = [r1, r2, r3, r4]
+            beer_sets = [set(r.keys()) for r in considered_ranks if r is not None]
+            common_beers = set.intersection(*beer_sets)
+            methods_ranks = [[] for r in considered_ranks if r is not None]
+            for beer in common_beers:
+                for i, r in enumerate([rank for rank in considered_ranks if rank is not None]):
+                    methods_ranks[i].append(r[beer])
+            considered_method_names = ["RSM", "SPCS", "TOPSIS", "UTA"]
+            method_names = [name for r, name in zip(considered_ranks, considered_method_names) if r is not None]
+            compare_rankings.main(rankings=methods_ranks, methods=method_names)
 
     def do_figure_RSM(self,data):
         fig = plt.figure(figsize=(12,12))
@@ -271,6 +300,7 @@ class Ui_MainWindow(object):
         if response[0] != "":
             self.path = response[0]
             data = pd.read_csv(response[0])
+            self.n_criteria = len(data.columns) - 2
             self.punkty.setHorizontalHeaderLabels(list(data.columns)[1:])
             for index,row in data.iterrows():
                 newItem = QtGui.QStandardItem(row[1])

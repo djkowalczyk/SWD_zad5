@@ -20,7 +20,7 @@ class Solution(NamedTuple):
     distances: np.ndarray
     ranking: np.ndarray
 
-    def to_excel(self, alternatives_names: list):
+    def to_excel(self, alternatives_names: List[str]):
 
         data = {'Wynik': self.ranking,
                 'Nazwa alternatywy': alternatives_names}
@@ -34,6 +34,12 @@ class Solution(NamedTuple):
         for i, score in enumerate(self.ranking):
             features = tuple(self.alternatives[i, 2:])
             dict_ranking[features] = score
+        return dict_ranking
+
+    def get_named_ranking(self, alternatives_names: List[str]) -> Dict[str, float]:
+        dict_ranking = {}
+        for name, score in zip(alternatives_names, self.ranking):
+            dict_ranking[name] = score
         return dict_ranking
 
 

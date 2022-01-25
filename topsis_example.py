@@ -8,23 +8,31 @@ def prepare_dataset_for_topsis(filepath: str):
         data = [line.split(",") for line in file.readlines()]
     if len(data[0]) == 7:
         names = [row[1] for row in data]
-        percents = [float(row[3]) for row in data]
+        percents = [float(row[2]) for row in data]
         ibus = [float(row[3]) for row in data]
         volumes = [float(row[4]) for row in data]
         commonness = [float(row[5]) for row in data]
         prices = [float(row[6]) for row in data]
         categories = [percents, ibus, volumes, commonness, prices]
         criteria_types = ['min', 'min', 'min', 'min', 'min']
+    elif len(data[0]) == 6:
+        names = [row[1] for row in data]
+        percents = [float(row[2]) for row in data]
+        ibus = [float(row[3]) for row in data]
+        volumes = [float(row[4]) for row in data]
+        prices = [float(row[5]) for row in data]
+        categories = [percents, ibus, volumes, prices]
+        criteria_types = ['min', 'min', 'min', 'min']
     elif len(data[0]) == 5:
         names = [row[1] for row in data]
-        percents = [float(row[3]) for row in data]
+        percents = [float(row[2]) for row in data]
         ibus = [float(row[3]) for row in data]
         volumes = [float(row[4]) for row in data]
         categories = [percents, ibus, volumes]
         criteria_types = ['min', 'min', 'min']
     elif len(data[0]) == 4:
         names = [row[1] for row in data]
-        percents = [float(row[3]) for row in data]
+        percents = [float(row[2]) for row in data]
         ibus = [float(row[3]) for row in data]
         categories = [percents, ibus]
         criteria_types = ['min', 'min']
@@ -61,5 +69,7 @@ def main(beer_data_path):
     s: Solution = topsis(alternatives=np.array(A), classes=np.array(K), weights=np.array(W),
                          criteria_types=criteria_types, metric=manhattan_metric)
 
+    named_ranking = s.get_named_ranking(names)
+
     # metoda elegancko zwraca słownik (współrzędne punktu) : wartość scoringowa
-    return s
+    return s, named_ranking
