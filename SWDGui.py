@@ -99,11 +99,11 @@ class Ui_MainWindow(object):
         used = self.comboBox.currentText()
         if used == "RSM":
             ranking,A1,A2,w = RSM.main(self.lista_dan,self.path)
-            for i in range(len(ranking)):
-                newItem = QtGui.QStandardItem(str(list(ranking)[i]))
+            for i in range(len(w)):
+                newItem = QtGui.QStandardItem(str(list(w)[i]))
                 self.rank.appendRow(newItem)
                 row_id = self.rank.rowCount() - 1
-                self.rank.setData(self.rank.index(row_id,1),str(ranking[list(ranking)[i]]))
+                self.rank.setData(self.rank.index(row_id,1),str(w[list(w)[i]]))
             for i in A1:
                 newItem = QtGui.QStandardItem(str(i))
                 self.klasy.appendRow(newItem)
@@ -120,7 +120,7 @@ class Ui_MainWindow(object):
         elif used == "SPCS":
             if len(self.lista_dan[0]) == 2:
                 ranking,A1,A2 = SP.main(self.lista_dan)
-                print(sorted(SP.change(ranking,self.path).items(), key = lambda: x[1]))
+                ranking = dict(sorted(SP.change(ranking,self.path).items(), key = lambda x: x[1]))
                 for i in range(len(ranking)):
                     newItem = QtGui.QStandardItem(str(list(ranking)[i]))
                     self.rank.appendRow(newItem)

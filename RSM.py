@@ -200,7 +200,6 @@ def main(points, path):
     ranking = calc_score_function(weights, distance_coefs)
 
     w = show_names(path, ranking)
-    print(w)
 
     return ranking,A1,A2,w
 
