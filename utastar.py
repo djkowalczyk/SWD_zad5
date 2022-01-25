@@ -193,6 +193,7 @@ class Utastar:
         for craft_beer in self.data_base:
             key = [craft_beer.name] + craft_beer.points
             value = craft_beer.utastar_value, counter
+            key = tuple(key)
             solution[key] = value
             counter += 1
         return solution
@@ -208,7 +209,6 @@ def main(path):
     data_base.create_functions()
     data_base.create_solution_table()
     return data_base.return_solution()
-
 
 
 

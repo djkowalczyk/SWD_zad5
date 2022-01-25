@@ -163,7 +163,7 @@ class Ui_MainWindow(object):
                 self.rank.appendRow(newItem)
                 row_id = self.rank.rowCount() - 1
                 self.rank.setData(self.rank.index(row_id,1),str(value))
-            self.do_figure_SP(s)
+            self.do_figure_STAR(s)
 
         elif "Porównanie" in used:
             if self.n_criteria == 0:
@@ -285,6 +285,52 @@ class Ui_MainWindow(object):
                 x2.append(key[0])
                 y2.append(key[1])
                 z2.append(key[2])
+                i += 1
+            ax.scatter(x2,y2,z2,c='red')
+            plt.show()
+
+    def do_figure_STAR(self,data):
+        fig = plt.figure(figsize=(12,12))
+        if len(self.lista_dan[0]) == 2:
+            x = []
+            y = []
+            for tup in self.lista_dan:
+                x.append(tup[0])
+                y.append(tup[1])
+
+            plt.scatter(x,y)
+            x2 = []
+            y2 = []
+            new_data = list(data)
+            i = 0
+            for cos in new_data:
+                if i > 5:
+                    break
+                x2.append(cos[1])
+                y2.append(cos[2])
+                i += 1
+            plt.scatter(x2,y2,c="red")
+            plt.show()
+        elif len(self.lista_dan[0]) == 3:
+            ax = fig.add_subplot(projection='3d')
+            x = []
+            y = []
+            z = []
+            for tup in self.lista_dan:
+                x.append(tup[0])
+                y.append(tup[1])
+                z.append(tup[2])
+            ax.scatter(x,y,z)
+            x2 = []
+            y2 = []
+            z2 = []
+            i = 0
+            for key,value in data.items():
+                if i > 5:
+                    break
+                x2.append(key[1])
+                y2.append(key[2])
+                z2.append(key[3])
                 i += 1
             ax.scatter(x2,y2,z2,c='red')
             plt.show()
