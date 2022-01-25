@@ -120,7 +120,7 @@ class Ui_MainWindow(object):
         elif used == "SPCS":
             if len(self.lista_dan[0]) == 2:
                 ranking,A1,A2 = SP.main(self.lista_dan)
-                print(SP.change(ranking,self.path))
+                print(sorted(SP.change(ranking,self.path).items(), key = lambda: x[1]))
                 for i in range(len(ranking)):
                     newItem = QtGui.QStandardItem(str(list(ranking)[i]))
                     self.rank.appendRow(newItem)

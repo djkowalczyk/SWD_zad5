@@ -21,6 +21,7 @@ class Points:
         string += ')'
         return string
 
+
 class Areas:
     """
     Klasa służaca do obrazowania relacji (pole jakie tworzą punkty)
@@ -57,7 +58,7 @@ def divide_into_groups(points: object, limit: int) -> Tuple[List[object]]:
     return a1, a2, u
 
 def check_if_points_independant(points: List[object]) -> List[object]:
-    # funkcja sprawdzająca  kolejny punkt po punkcie czy kazdy z nich jets punktem niezaleznym w danym podzbiorze
+    # funkcja sprawdzająca kolejny punkt po punkcie czy kazdy z nich jets punktem niezaleznym w danym podzbiorze
     index = []
     for i in points:
         for j in points:
@@ -165,12 +166,20 @@ def import_csv_file(path):
             hash[points] = name
     return hash
 
+def compare_points(a , b):
+    return round(a.a, 6) == round(b.a, 6) and \
+           round(a.b, 6) == round(b.b, 6) and \
+           round(a.c, 6) == round(b.c, 6) and \
+           round(a.d, 6) == round(b.d, 6) and \
+           round(a.e, 6) == round(b.e, 6)
+
 def comparison(ranking, hash):
     named_ranking = {}
     for pos in ranking.keys():
-        print(pos)
-        print(hash[pos])
-        named_ranking[hash[pos]] = pos
+        for hash_pos in hash.keys():
+            if compare_points(pos, hash_pos):
+                named_ranking[hash[hash_pos]] = ranking[pos]
+                break
     return named_ranking
 
 def show_names(path, ranking):
@@ -191,6 +200,7 @@ def main(points, path):
     ranking = calc_score_function(weights, distance_coefs)
 
     w = show_names(path, ranking)
+    print(w)
 
     return ranking,A1,A2,w
 
